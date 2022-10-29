@@ -2,7 +2,7 @@ version: '3'
 services:
   genres:
     build:
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile.prod
       context: ./genres
     volumes:
       - /app/node_modules
@@ -17,7 +17,7 @@ services:
       - genres-db
   movies:
     build:
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile.prod
       context: ./movies
     volumes:
       - /app/node_modules
