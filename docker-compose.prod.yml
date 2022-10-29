@@ -38,7 +38,7 @@ services:
     restart: always
     build: ./nginx
     ports:
-      - 8080:80
+      - 80:80
   event-bus:
     image: nats-streaming:0.17.0
     command:
