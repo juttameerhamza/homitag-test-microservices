@@ -1,0 +1,53 @@
+version: '3'
+services:
+  genres:
+    build: ./genres
+    volumes:
+      - /app/node_modules
+      - ./genres:/app
+    environment:
+      - PORT=8000
+      - DB_URL=mongodb://genres-db/genres
+      - NATS_URL=http://event-bus:4222
+      - NATS_CLUSTER_ID=netflix
+      - NATS_CLIENT_ID=genres
+    depends_on:
+      - genres-db
+  movies:
+    build: ./movies
+    volumes:
+      - /app/node_modules
+      - ./movies:/app
+    environment:
+      - PORT=8000
+      - DB_URL=mongodb://movies-db/movies
+      - NATS_URL=http://event-bus:4222
+      - NATS_CLUSTER_ID=netflix
+      - NATS_CLIENT_ID=movies
+    depends_on:
+      - movies-db
+  genres-db:
+    image: mongo
+  movies-db:
+    image: mongo
+  proxy:
+    restart: always
+    build: ./nginx
+    ports:
+      - 8080:80
+  event-bus:
+    image: nats-streaming:0.17.0
+    command: 
+      - "-p"
+      - "4222"
+      - "-m"
+      - "8222"
+      - "-hbi"
+      - "5s"
+      - "-hbt"
+      - "5s"
+      - "-hbf"
+      - "2"
+      - "-SD"
+      - "-cid"
+      - "netflix"
